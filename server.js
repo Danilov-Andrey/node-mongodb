@@ -1,9 +1,9 @@
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 
-const app = require('./app')
+dotenv.config({ path: './config.env' });
 
-dotenv.config({ path: './config.env' })
+const app = require('./app');
 
 app.listen(process.env.PORT, () => {
-    console.log('Start express')
-})
+  console.log('Start express');
+});
