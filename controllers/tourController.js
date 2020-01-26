@@ -36,7 +36,23 @@ exports.getTour = async (req, res) => {
 };
 exports.getTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    // Filtering pagination info
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach(field => delete queryObj[field]);
+
+    // Set advanced filtering (lte, lt, gte, gt)
+    let advancedQuery = JSON.stringify(queryObj);
+    advancedQuery = advancedQuery.replace(
+      /\b(gte|gt|lte|lt)\b/g,
+      match => `$${match}`
+    );
+    advancedQuery = JSON.parse(advancedQuery);
+
+    // Send query
+    const query = Tour.find(advancedQuery);
+    const tours = await query;
+
     res.status(200).json({
       status: 'success',
       results: tours.length,
